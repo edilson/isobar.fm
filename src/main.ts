@@ -30,24 +30,13 @@ export async function getBandsHandler(
 
   const service = await instance.resolve<BandsService>(BandsService, contextId);
 
-  const result = await service.getBands(event.body);
+  let result;
 
-  return { statusCode: 200, body: JSON.stringify(result.data) };
-}
-
-export async function getBandsByNameHandler(
-  event: APIGatewayProxyEvent,
-  context: Context,
-): Promise<APIGatewayProxyResult> {
-
-  const instance = await bootstrap();
-  
-  const contextId = ContextIdFactory.create();
-  instance.registerRequestByContextId({ context }, contextId);
-
-  const service = await instance.resolve<BandsService>(BandsService, contextId);
-
-  const result = await service.getBandsByName(event.body);
+  if(event.queryStringParameters.name) {
+    result = await service.getBandsByName(event.queryStringParameters.name);
+  } else if(event.queryStringParameters.sortBy) {
+    result = await service.getBands(event.queryStringParameters.sortBy)
+  }
 
   return { statusCode: 200, body: JSON.stringify(result.data) };
 }

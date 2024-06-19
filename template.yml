@@ -18,27 +18,7 @@ Resources:
           Properties:
             Path: /bands
             Method: get
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: 'es2020'
-        Sourcemap: true
-        External: ['class-transformer', '@nestjs/websockets/socket-module', 'class-validator', '@nestjs/microservices']
-        EntryPoints:
-          - main.ts
-  GetBandsByNameFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./src/
-      Handler: main.getBandsByNameHandler
-      Runtime: nodejs18.x
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /bands
-            Method: get
+            RestApiId: !Ref ApiGatewayApi
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
@@ -60,6 +40,7 @@ Resources:
           Properties:
             Path: /bands/{bandId}
             Method: get
+            RestApiId: !Ref ApiGatewayApi
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
