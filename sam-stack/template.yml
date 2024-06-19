@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS SAM template for bands API
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Dev
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: /src
+      Handler: main.getBandsHandler
+      Runtime: nodejs18.x
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /bands
+            Method: GET
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: /src
+      Handler: main.getBandsByNameHandler
+      Runtime: nodejs18.x
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /bands
+            Method: ANY
+  LambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: /src
+      Handler: index.getBandByIdHandler
+      Runtime: nodejs18.x
+      Events:
+        ProxyApiRoot:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: /bands
+            Method: ANY
