@@ -6,12 +6,24 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Dev
+  NodeModulesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      Description: full set of function dependencies
+      ContentUri: ./node_modules
+      CompatibleRuntimes:
+        - nodejs18.x
+      RetentionPolicy: Retain
   GetBandsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/
       Handler: main.getBandsHandler
+      Layers:
+        - !Ref NodeModulesLayer
       Runtime: nodejs18.x
+      MemorySize: 1024
+      Timeout: 300
       Events:
         ApiEvent:
           Type: Api
@@ -32,8 +44,12 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/
-      Handler: index.getBandByIdHandler
+      Handler: main.getBandByIdHandler
+      Layers:
+        - !Ref NodeModulesLayer
       Runtime: nodejs18.x
+      MemorySize: 1024
+      Timeout: 300
       Events:
         ApiEvent:
           Type: Api

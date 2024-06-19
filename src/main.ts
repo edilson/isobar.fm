@@ -36,6 +36,8 @@ export async function getBandsHandler(
     result = await service.getBandsByName(event.queryStringParameters.name);
   } else if(event.queryStringParameters.sortBy) {
     result = await service.getBands(event.queryStringParameters.sortBy)
+  } else {
+    result = await service.getBands();
   }
 
   return { statusCode: 200, body: JSON.stringify(result.data) };
