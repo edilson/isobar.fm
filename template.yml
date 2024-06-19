@@ -6,21 +6,13 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Dev
-  NodeModulesLayer:
-    Type: AWS::Serverless::LayerVersion
-    Properties:
-      Description: full set of function dependencies
-      ContentUri: ./node_modules
-      CompatibleRuntimes:
-        - nodejs18.x
-      RetentionPolicy: Retain
   GetBandsFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/
       Handler: main.getBandsHandler
-      Layers:
-        - !Ref NodeModulesLayer
+      PackageType: Image
+      ImageUri: public.ecr.aws/g3m0j0d5/bands-app:latest
       Runtime: nodejs18.x
       MemorySize: 1024
       Timeout: 300
@@ -32,21 +24,16 @@ Resources:
             Method: get
             RestApiId: !Ref ApiGatewayApi
     Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: 'es2020'
-        Sourcemap: true
-        External: ['class-transformer', '@nestjs/websockets/socket-module', 'class-validator', '@nestjs/microservices']
-        EntryPoints:
-          - main.ts
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile
   GetBandByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/
       Handler: main.getBandByIdHandler
-      Layers:
-        - !Ref NodeModulesLayer
+      PackageType: Image
+      ImageUri: public.ecr.aws/g3m0j0d5/bands-app:latest
       Runtime: nodejs18.x
       MemorySize: 1024
       Timeout: 300
@@ -58,11 +45,6 @@ Resources:
             Method: get
             RestApiId: !Ref ApiGatewayApi
     Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: 'es2020'
-        Sourcemap: true
-        External: ['class-transformer', '@nestjs/websockets/socket-module', 'class-validator', '@nestjs/microservices']
-        EntryPoints:
-          - main.ts
+      DockerTag: nodejs18.x-v1
+      DockerContext: ./
+      Dockerfile: Dockerfile
